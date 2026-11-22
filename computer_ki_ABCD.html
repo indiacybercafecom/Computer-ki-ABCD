@@ -373,6 +373,7 @@ body{
   text-underline-offset:2px;
 }
 .brand-credit a:hover{color:#ff9933}
+.floating-menu{position:fixed;top:14px;left:14px;z-index:1000;font-family:Arial,sans-serif}.floating-menu-toggle{width:42px;height:42px;border:0;border-radius:50%;background:#111827;color:#fff;font-size:20px;line-height:42px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.28);cursor:pointer}.floating-menu-toggle:focus-visible{outline:3px solid #ff9933;outline-offset:3px}.floating-options{display:none;position:absolute;top:50px;left:0;width:178px;padding:6px;border:1px solid #d7dce5;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(15,23,42,.22)}.floating-menu.open .floating-options{display:block}.floating-option{display:flex;width:100%;align-items:center;gap:8px;border:0;border-radius:7px;background:#fff;color:#172033;padding:10px 11px;font-size:14px;font-weight:700;text-align:left;text-decoration:none;cursor:pointer}.floating-option:hover{background:#fff0df;color:#7c3600}.floating-option-icon{width:22px;text-align:center;color:#ff7700}
 @media(max-width:760px){
   .toolbar{position:sticky;top:0;padding:10px 12px}
   .toolbar .group{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -452,10 +453,21 @@ body{
   .lesson{break-after:page;page-break-after:always}
   #lessons .lesson:last-child{break-after:auto;page-break-after:auto}
   .brand-credit{color:#555}
+  .floating-menu{display:none!important}
 }
-
+.floating-menu.hidden-on-scroll{opacity:0!important;pointer-events:none;transform:scale(.85)}
+  .floating-menu{transition:opacity .18s ease,transform .18s ease}
+.floating-menu,.floating-menu *{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}.floating-menu-toggle,.floating-option{outline:none}.floating-menu-toggle{transition:transform .12s ease,background .12s ease,box-shadow .12s ease}.floating-menu-toggle:active{transform:scale(.88);background:#ff9933}.floating-menu.open .floating-menu-toggle{transform:rotate(90deg);background:#ff9933}.floating-option{transition:transform .08s ease,background .12s ease}.floating-option:active{transform:scale(.96);background:#ffe2bd}
 </style></head>
 <body>
+<div class="floating-menu" id="floatingMenu">
+  <button class="floating-menu-toggle" type="button" aria-label="Menu खोलें" aria-expanded="false" aria-controls="floatingOptions" onclick="toggleFloatingMenu()">☰</button>
+  <div class="floating-options" id="floatingOptions">
+    <button class="floating-option" type="button" onclick="printDocument(false)"><span>Print</span></button>
+    <button class="floating-option" type="button" onclick="printDocument(true)"><span>Download PDF</span></button>
+    <a class="floating-option" href="mailto:indiacybercafe.com@gmail.com?subject=India%20Cyber%20Cafe%20Support"><span>Support</span></a>
+  </div>
+</div>
 <main class="book" id="book">
 <section class="page cover" id="cover"><h1>कंप्यूटर की ABCD</h1><div class="cover-rule"></div><div class="subtitle">कंप्यूटर, वर्ड, एक्सेल और टैली सीखने की आसान अभ्यास पुस्तक</div><div class="cover-box"><b>चार भाग · 56 काम · आसान चरण</b><br>देखिए · समझिए · खुद करके सीखिए</div><p class="muted">शुरुआती विद्यार्थियों और रोज़मर्रा के कार्यालयी काम के लिए</p><div class="brand-credit"><span>Prepared &amp; presented by</span><a href="https://indiacybercafe.com" target="_blank" rel="noopener noreferrer"><strong>India Cyber Cafe</strong></a></div><div class="page-no">1</div></section>
 <section class="page index-page" id="index"><div class="running"><span>कंप्यूटर की ABCD</span><span>विषय सूची</span></div><div class="index-title">इस किताब में</div><div class="index-sub">चार भाग, एक सिलसिले में। हर भाग के 14 काम। किसी विषय पर जाने के लिए उसके नाम पर क्लिक कीजिए।</div><div id="indexContent"></div><div class="page-no">4</div></section>
@@ -535,5 +547,12 @@ function lessonHtml(pi,ii,item){let pg=pageNum(pi,ii),part=parts[pi];return `<se
 function renderLessons(){let h='';parts.forEach((p,pi)=>p.items.forEach((it,ii)=>h+=lessonHtml(pi,ii,it)));document.getElementById('lessons').innerHTML=h;}
 function showIndex(){document.getElementById('index').scrollIntoView({behavior:'smooth'});}
 function goLesson(p,i){document.getElementById(`lesson-${p}-${i}`).scrollIntoView({behavior:'smooth'});}
+function toggleFloatingMenu(){const menu=document.getElementById('floatingMenu');const open=menu.classList.toggle('open');const button=menu.querySelector('.floating-menu-toggle');button.textContent=open?'×':'☰';button.setAttribute('aria-expanded',open?'true':'false');button.setAttribute('aria-label',open?'Menu बंद करें':'Menu खोलें')}
+document.addEventListener('click',e=>{const menu=document.getElementById('floatingMenu');if(menu&&!menu.contains(e.target)){menu.classList.remove('open');const button=menu.querySelector('.floating-menu-toggle');button.textContent='☰';button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Menu खोलें')}});
+function printDocument(downloadPdf=false){const menu=document.getElementById('floatingMenu');menu.classList.remove('open');const button=menu.querySelector('.floating-menu-toggle');button.textContent='☰';button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Menu खोलें');const originalTitle=document.title;document.title='Computer ki ABCD';window.print();setTimeout(()=>{document.title=originalTitle},500)}
 renderIndex();renderLessons();
-</script></body></html>
+let floatingScrollTimer;
+window.addEventListener('scroll',()=>{const menu=document.getElementById('floatingMenu');if(!menu)return;clearTimeout(floatingScrollTimer);menu.classList.toggle('hidden-on-scroll',window.scrollY>20);if(window.scrollY<=20){menu.classList.remove('hidden-on-scroll','open')}}, {passive:true});
+</script>
+</body>
+</html>
