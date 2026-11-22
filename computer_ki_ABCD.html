@@ -60,7 +60,7 @@ button{cursor:pointer}
   opacity:.92
 }
 .page:after{
-  content:"";position:absolute;right:18px;top:18px;width:58px;height:15px;
+  content:"";position:absolute;right:18px;top:-8px;width:54px;height:13px;
   background:rgba(181,166,66,.48);transform:rotate(4deg);pointer-events:none
 }
 .running{
@@ -350,15 +350,29 @@ body{
 .cover h1{font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif}
 .cover .cover-box{border-radius:10px;box-shadow:0 8px 0 rgba(255,153,51,.75);transform:none}
 .brand-credit{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:nowrap;
+  gap:6px;
+  width:100%;
+  white-space:nowrap;
   margin:28px 0 0;
-  padding-top:10px;
+  padding:12px 8px 0;
   border-top:1px solid #d7dce5;
   color:#647084;
-  font:600 11px/1.5 Arial,sans-serif;
-  letter-spacing:.25px;
+  font:600 clamp(9px,1.1vw,12px)/1.4 Arial,sans-serif;
+  letter-spacing:.15px;
   text-align:center;
 }
-.brand-credit strong{color:#172554}
+.brand-credit strong{color:#ff9933}
+.brand-credit a{
+  color:inherit;
+  font-weight:800;
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+.brand-credit a:hover{color:#ff9933}
 @media(max-width:760px){
   .toolbar{position:sticky;top:0;padding:10px 12px}
   .toolbar .group{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -440,10 +454,9 @@ body{
 
 </style></head>
 <body>
-<div class="toolbar"><strong>कंप्यूटर की ABCD · अभ्यास पुस्तक</strong><div class="group"><input id="search" class="search" placeholder="विषय खोजें…" aria-label="विषय खोजें"><button onclick="showIndex()">विषय सूची</button><button onclick="window.print()">A4 प्रिंट / PDF</button></div></div>
 <main class="book" id="book">
-<section class="page cover" id="cover"><h1>कंप्यूटर की ABCD</h1><div class="cover-rule"></div><div class="subtitle">कंप्यूटर, वर्ड, एक्सेल और टैली सीखने की आसान अभ्यास पुस्तक</div><div class="cover-box"><b>चार भाग · 56 काम · आसान चरण</b><br>देखिए · समझिए · खुद करके सीखिए</div><p class="muted">शुरुआती विद्यार्थियों और रोज़मर्रा के कार्यालयी काम के लिए</p><div class="brand-credit">Prepared &amp; presented by <strong>India Cyber Cafe</strong> · indiacybercafe.com</div><div class="page-no">1</div></section>
-<section class="page index-page" id="index"><div class="running"><span>कंप्यूटर की ABCD</span><span>विषय सूची</span></div><div class="index-title">इस किताब में</div><div class="index-sub">चार भाग, एक सिलसिले में। हर भाग के 14 काम। किसी विषय पर जाने के लिए उसके नाम पर क्लिक कीजिए।</div><div id="indexContent"></div><div class="brand-credit">Prepared &amp; presented by <strong>India Cyber Cafe</strong> · indiacybercafe.com</div><div class="page-no">4</div></section>
+<section class="page cover" id="cover"><h1>कंप्यूटर की ABCD</h1><div class="cover-rule"></div><div class="subtitle">कंप्यूटर, वर्ड, एक्सेल और टैली सीखने की आसान अभ्यास पुस्तक</div><div class="cover-box"><b>चार भाग · 56 काम · आसान चरण</b><br>देखिए · समझिए · खुद करके सीखिए</div><p class="muted">शुरुआती विद्यार्थियों और रोज़मर्रा के कार्यालयी काम के लिए</p><div class="brand-credit"><span>Prepared &amp; presented by</span><a href="https://indiacybercafe.com" target="_blank" rel="noopener noreferrer"><strong>India Cyber Cafe</strong></a></div><div class="page-no">1</div></section>
+<section class="page index-page" id="index"><div class="running"><span>कंप्यूटर की ABCD</span><span>विषय सूची</span></div><div class="index-title">इस किताब में</div><div class="index-sub">चार भाग, एक सिलसिले में। हर भाग के 14 काम। किसी विषय पर जाने के लिए उसके नाम पर क्लिक कीजिए।</div><div id="indexContent"></div><div class="page-no">4</div></section>
 <div id="lessons"></div>
 </main>
 <script>
@@ -516,12 +529,9 @@ const parts=[
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function pageNum(partIndex,itemIndex){return parts[partIndex].start+itemIndex*4;}
 function renderIndex(){let html='';parts.forEach((p,pi)=>{let left=p.items.slice(0,7),right=p.items.slice(7);html+=`<section class="part"><div class="part-head"><span class="part-no">भाग ${pi+1}</span><span>${p.title}</span><span class="dots"></span><small>पेज ${p.start}</small></div><div class="index-list"><div class="index-col">${left.map((it,i)=>`<div class="index-item index-link" onclick="goLesson(${pi},${i})"><span>${i+1}. ${esc(it[0])}</span><span class="pg">${pageNum(pi,i)+2}</span></div>`).join('')}</div><div class="index-col">${right.map((it,i)=>`<div class="index-item index-link" onclick="goLesson(${pi},${i+7})"><span>${i+8}. ${esc(it[0])}</span><span class="pg">${pageNum(pi,i+7)+2}</span></div>`).join('')}</div></div></section>`});document.getElementById('indexContent').innerHTML=html;}
-function lessonHtml(pi,ii,item){let pg=pageNum(pi,ii),part=parts[pi];return `<section class="page lesson" id="lesson-${pi}-${ii}" data-search="${esc((part.title+' '+item[0]+' '+item[1]).toLowerCase())}"><div class="running"><span>${part.title}</span><span>काम ${ii+1} · ${esc(item[0])}</span></div><div class="tag">★ शुरुआती अभ्यास · भाग ${pi+1}</div><h1 class="main-title">काम ${ii+1} : ${esc(item[0])}</h1><p class="intro">${esc(item[1])} इस काम में दिए गए चरणों को क्रम से कीजिए और अंत में अपना अभ्यास जाँचिए।</p><div class="task-label">1 · यह बनाना है</div><div class="note"><b>आज का लक्ष्य:</b> ${esc(item[3])}<br><b>ज़रूरी बात:</b> ${esc(item[4])}</div><div class="task-label">2 · कहाँ से शुरू करें</div><ol class="steps">${item[2].map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="task-label">3 · याद रखने की बात</div><div class="note">${esc(item[4])}</div><div class="grid"><div class="mini"><b>इस काम से क्या सीखेंगे?</b><span>${esc(item[3])}</span></div><div class="mini"><b>काम पूरा होने पर</b><span>अपनी फाइल सेव करें और उसे दोबारा खोलकर जाँचें।</span></div></div><div class="practice"><h3>4 · खुद करके देखिए</h3><p>अब यही काम बिना चरण देखे एक बार दोहराइए। अपने बनाए काम में नाम, तारीख, वर्तनी और सेव की गई फाइल जाँचिए।</p><ul class="checklist"><li>मैंने सभी चरण पूरे किए।</li><li>मैंने परिणाम को जाँचा।</li><li>मैंने फाइल सही नाम से सेव की।</li></ul></div><div class="brand-credit">Prepared &amp; presented by <strong>India Cyber Cafe</strong> · indiacybercafe.com</div><div class="nav-panel"><button onclick="prevLesson(${pi},${ii})">← पिछला काम</button><button onclick="showIndex()">विषय सूची</button><button onclick="nextLesson(${pi},${ii})">अगला काम →</button></div><div class="page-no">${pg+2}</div></section>`}
+function lessonHtml(pi,ii,item){let pg=pageNum(pi,ii),part=parts[pi];return `<section class="page lesson" id="lesson-${pi}-${ii}" data-search="${esc((part.title+' '+item[0]+' '+item[1]).toLowerCase())}"><div class="running"><span>${part.title}</span><span>काम ${ii+1} · ${esc(item[0])}</span></div><div class="tag">★ शुरुआती अभ्यास · भाग ${pi+1}</div><h1 class="main-title">काम ${ii+1} : ${esc(item[0])}</h1><p class="intro">${esc(item[1])} इस काम में दिए गए चरणों को क्रम से कीजिए और अंत में अपना अभ्यास जाँचिए।</p><div class="task-label">1 · यह बनाना है</div><div class="note"><b>आज का लक्ष्य:</b> ${esc(item[3])}<br><b>ज़रूरी बात:</b> ${esc(item[4])}</div><div class="task-label">2 · कहाँ से शुरू करें</div><ol class="steps">${item[2].map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="task-label">3 · याद रखने की बात</div><div class="note">${esc(item[4])}</div><div class="grid"><div class="mini"><b>इस काम से क्या सीखेंगे?</b><span>${esc(item[3])}</span></div><div class="mini"><b>काम पूरा होने पर</b><span>अपनी फाइल सेव करें और उसे दोबारा खोलकर जाँचें।</span></div></div><div class="practice"><h3>4 · खुद करके देखिए</h3><p>अब यही काम बिना चरण देखे एक बार दोहराइए। अपने बनाए काम में नाम, तारीख, वर्तनी और सेव की गई फाइल जाँचिए।</p><ul class="checklist"><li>मैंने सभी चरण पूरे किए।</li><li>मैंने परिणाम को जाँचा।</li><li>मैंने फाइल सही नाम से सेव की।</li></ul></div><div class="page-no">${pg+2}</div></section>`}
 function renderLessons(){let h='';parts.forEach((p,pi)=>p.items.forEach((it,ii)=>h+=lessonHtml(pi,ii,it)));document.getElementById('lessons').innerHTML=h;}
 function showIndex(){document.getElementById('index').scrollIntoView({behavior:'smooth'});}
 function goLesson(p,i){document.getElementById(`lesson-${p}-${i}`).scrollIntoView({behavior:'smooth'});}
-function nextLesson(p,i){if(i<13)goLesson(p,i+1);else if(p<3)goLesson(p+1,0);else showIndex();}
-function prevLesson(p,i){if(i>0)goLesson(p,i-1);else if(p>0)goLesson(p-1,13);else showIndex();}
 renderIndex();renderLessons();
-document.getElementById('search').addEventListener('input',e=>{let q=e.target.value.trim().toLowerCase();document.querySelectorAll('.lesson').forEach(el=>{el.classList.toggle('hidden',!!q&&!el.dataset.search.includes(q));});if(q){document.getElementById('lessons').scrollIntoView({behavior:'smooth'});}});
 </script></body></html>
