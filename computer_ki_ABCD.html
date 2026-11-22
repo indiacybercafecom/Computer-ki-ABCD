@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>कंप्यूटर की ABCD — India Cyber Cafe</title>
+<style>
+
+:root{
+  --coal:#2E2E2E;--yellow:#B5A642;--red:#8C2727;--paper:#E9E1D4;
+  --olive:#6B8E23;--blue:#3B5998;--grey:#7A7A7A;--orange:#A84700;
+  --ink:#292722;--muted:#625e55;--line:#b9b0a2;--soft:#f3ede2;
+  --shadow:5px 7px 0 rgba(46,46,46,.18)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+body{
+  margin:0;color:var(--ink);
+  background-color:#77736b;
+  background-image:radial-gradient(rgba(30,28,24,.20) .7px,transparent .7px),
+    linear-gradient(135deg,#77736b,#5c5a54);
+  background-size:5px 5px,auto;
+  font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,"Courier New",monospace;
+  line-height:1.78;font-size:16px
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.toolbar{
+  position:sticky;top:0;z-index:100;background:var(--coal);color:var(--paper);
+  border-bottom:5px solid var(--yellow);padding:11px clamp(12px,3vw,30px);
+  display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  box-shadow:0 4px 0 #1c1b19
+}
+.toolbar strong{font-family:"Courier New",monospace;font-size:15px;letter-spacing:.3px}
+.toolbar .group{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.toolbar button,.nav-panel button{
+  border:2px solid var(--paper);border-radius:2px;background:var(--red);color:#fff8e9;
+  padding:8px 13px;font-weight:800;box-shadow:3px 3px 0 var(--yellow);
+  transition:transform .18s,box-shadow .18s,background .18s
+}
+.toolbar button:hover,.nav-panel button:hover{
+  background:var(--olive);transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--yellow)
+}
+.toolbar button:active,.nav-panel button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--yellow)}
+.search{
+  min-width:170px;padding:9px 11px;border:2px solid var(--coal);border-radius:2px;
+  background:var(--paper);color:var(--coal);outline:none;box-shadow:3px 3px 0 var(--blue)
+}
+.search:focus{border-color:var(--yellow);box-shadow:3px 3px 0 var(--red)}
+.book{max-width:1000px;margin:32px auto;padding:0 18px}
+.page{
+  background-color:var(--paper);color:var(--ink);width:100%;min-height:1120px;
+  padding:58px 68px 76px;margin:0 auto 32px;position:relative;
+  border:1px solid #c9c0b2;box-shadow:var(--shadow);
+  clip-path:polygon(0 0,99.4% .2%,100% 1%,99.8% 99.4%,99.2% 100%,.3% 99.8%,0 99%);
+  page-break-after:always
+}
+.page:before{
+  content:"";position:absolute;top:0;left:0;width:9px;height:100%;
+  background:repeating-linear-gradient(180deg,var(--red) 0 28px,var(--coal) 28px 55px,var(--yellow) 55px 58px);
+  opacity:.92
+}
+.page:after{
+  content:"";position:absolute;right:18px;top:18px;width:58px;height:15px;
+  background:rgba(181,166,66,.48);transform:rotate(4deg);pointer-events:none
+}
+.running{
+  display:flex;justify-content:space-between;gap:12px;font-size:13px;color:#625d54;
+  border-bottom:2px solid var(--coal);padding-bottom:9px;margin-bottom:25px;
+  font-family:"Courier New","Noto Sans Devanagari",monospace
+}
+.running span:last-child{font-weight:800;color:var(--red);text-align:right}
+.main-title{
+  font-family:"Courier New","Noto Sans Devanagari",monospace;
+  font-size:clamp(26px,3.4vw,37px);line-height:1.45;font-weight:900;
+  margin:12px 0 22px;padding:0 0 12px;border-bottom:5px double var(--coal);
+  text-shadow:1px 1px 0 rgba(181,166,66,.45);position:relative
+}
+.main-title:after{
+  content:"";position:absolute;bottom:-7px;left:8px;width:82px;
+  border-bottom:4px solid var(--red);transform:rotate(-1deg)
+}
+.intro{font-size:19px;line-height:1.9;margin:18px 0 28px;color:#38352f}
+.tag,.index-title{
+  display:inline-block;position:relative;background:var(--yellow);color:#27251f;
+  font-weight:900;font-size:17px;padding:6px 15px 7px;margin:10px 0 13px;
+  border:1px solid #817735;box-shadow:3px 3px 0 var(--coal);transform:rotate(-.6deg)
+}
+.tag:before,.index-title:before{
+  content:"";position:absolute;left:38%;top:-6px;width:45px;height:12px;
+  background:rgba(233,225,212,.65);transform:rotate(-5deg)
+}
+.task-label{
+  font-family:"Courier New","Noto Sans Devanagari",monospace;
+  font-size:20px;font-weight:900;margin:27px 0 12px;color:var(--red);
+  display:flex;align-items:center;gap:10px
+}
+.task-label:before{content:"///";font:900 14px "Courier New",monospace;color:var(--olive);letter-spacing:-2px}
+.steps{counter-reset:step;list-style:none;padding:0;margin:14px 0 25px}
+.steps li{
+  counter-increment:step;position:relative;padding:12px 15px 12px 60px;
+  font-size:18px;min-height:56px;margin:11px 0;line-height:1.8;
+  background:rgba(255,255,255,.34);border:1px solid #bdb3a4;
+  box-shadow:2px 2px 0 rgba(46,46,46,.12)
+}
+.steps li:nth-child(even){transform:rotate(.12deg);border-left:4px solid var(--blue)}
+.steps li:nth-child(odd){transform:rotate(-.12deg);border-left:4px solid var(--red)}
+.steps li:before{
+  content:counter(step);position:absolute;left:12px;top:12px;width:33px;height:33px;
+  display:grid;place-items:center;background:var(--coal);color:var(--paper);
+  border:2px solid var(--yellow);font:900 16px "Courier New",monospace;
+  transform:rotate(-4deg)
+}
+.note{
+  position:relative;border:2px solid var(--coal);border-left:7px solid var(--red);
+  background:#f2eadc;padding:18px 21px;margin:24px 0;font-size:17px;line-height:1.85;
+  box-shadow:4px 4px 0 rgba(46,46,46,.16)
+}
+.note:after{
+  content:"";position:absolute;right:18px;top:-8px;width:54px;height:13px;
+  background:rgba(181,166,66,.65);transform:rotate(3deg)
+}
+.note b{font-weight:900;color:var(--red)}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:15px;margin:20px 0}
+.mini{
+  position:relative;border:2px solid var(--coal);padding:15px 17px;min-height:100px;
+  background:#f5eee3;box-shadow:3px 3px 0 rgba(46,46,46,.16)
+}
+.mini:nth-child(2){border-style:dashed;border-color:var(--blue);transform:rotate(.35deg)}
+.mini b{display:block;font-family:"Courier New","Noto Sans Devanagari",monospace;font-size:17px;margin-bottom:6px;color:var(--red)}
+.mini span{font-size:15px;color:#4f4a42}
+.checklist{list-style:none;padding:0;margin:12px 0}
+.checklist li{font-size:16px;padding:5px 0}
+.checklist li:before{content:"[✓]";font:900 14px "Courier New",monospace;color:var(--olive);margin-right:10px}
+.table-wrap{overflow-x:auto;margin:18px 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border:1.5px solid var(--coal);padding:9px 10px;text-align:left;vertical-align:top}
+th{font-weight:900;background:var(--coal);color:var(--paper);font-family:"Courier New","Noto Sans Devanagari",monospace}
+tr:nth-child(even) td{background:rgba(181,166,66,.13)}
+.formula{
+  font-family:"Courier New",monospace;background:#e0d7c8;padding:3px 7px;
+  border:1px dashed var(--red);color:#6f2020;white-space:normal
+}
+.practice{
+  position:relative;border:2px dashed var(--olive);padding:18px 20px;margin-top:25px;
+  background:rgba(107,142,35,.08);box-shadow:3px 3px 0 rgba(46,46,46,.12)
+}
+.practice h3{margin:0 0 8px;font-size:20px;color:var(--olive);font-family:"Courier New","Noto Sans Devanagari",monospace}
+.practice p{margin:8px 0}
+.page-no{
+  position:absolute;right:46px;bottom:28px;border:2px solid var(--red);
+  width:40px;height:38px;display:grid;place-items:center;background:var(--yellow);
+  color:var(--coal);font:900 15px "Courier New",monospace;transform:rotate(3deg);
+  box-shadow:2px 2px 0 var(--coal)
+}
+.index-page{min-height:1120px}
+.index-title{font-size:28px}
+.index-sub{font-size:16px;margin:12px 0 24px;color:#5d574d}
+.part{
+  position:relative;margin:24px 0 30px;padding:15px 16px 17px;
+  border:2px solid var(--coal);background:rgba(255,255,255,.28);
+  box-shadow:4px 4px 0 rgba(46,46,46,.13)
+}
+.part:nth-child(even){transform:rotate(.12deg)}
+.part-head{
+  display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;
+  border-bottom:2px dashed var(--red);padding-bottom:9px;color:var(--coal)
+}
+.part-head .part-no{
+  border:2px solid var(--coal);padding:3px 9px;background:var(--yellow);
+  white-space:nowrap;font-size:15px;transform:rotate(-2deg)
+}
+.part-head .dots{flex:1;border-bottom:2px dotted var(--grey)}
+.part-head small{font-size:15px;white-space:nowrap;color:var(--red);font-weight:900}
+.index-list{display:grid;grid-template-columns:1fr 1fr;gap:0 25px;margin-top:9px}
+.index-col{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 9px}
+.index-item{display:contents}
+.index-item span{padding:5px 5px;font-size:15px;border-bottom:1px dotted #bdb3a4}
+.index-item .num{font-weight:800}
+.index-item .pg{font-weight:900;text-align:right;color:var(--red)}
+.index-link{cursor:pointer}
+.index-link:hover span{background:rgba(181,166,66,.3);text-decoration:underline}
+.cover{
+  display:flex;flex-direction:column;justify-content:center;text-align:center;min-height:950px;
+  background-color:var(--coal);
+  background-image:radial-gradient(rgba(233,225,212,.12) .8px,transparent .8px),
+    linear-gradient(135deg,#252525,#44413a);
+  background-size:6px 6px,auto;color:var(--paper)
+}
+.cover:before{width:12px;background:repeating-linear-gradient(180deg,var(--red) 0 30px,var(--yellow) 30px 60px,var(--blue) 60px 64px)}
+.cover:after{width:110px;height:24px;right:35%;top:13%;background:rgba(181,166,66,.8);transform:rotate(-7deg)}
+.cover h1{
+  font-family:"Courier New","Noto Sans Devanagari",monospace;font-size:clamp(40px,6vw,62px);
+  line-height:1.35;margin:0;color:var(--paper);text-shadow:3px 3px 0 var(--red)
+}
+.cover .subtitle{font-size:22px;margin:20px auto;max-width:620px;color:#e3dacb}
+.cover .cover-rule{border-top:5px solid var(--red);border-bottom:3px solid var(--yellow);height:10px;width:75%;margin:30px auto}
+.cover .cover-box{
+  position:relative;border:2px dashed var(--paper);padding:22px;margin:30px auto;
+  max-width:570px;font-size:19px;background:rgba(233,225,212,.08);color:var(--paper);
+  box-shadow:5px 5px 0 var(--red);transform:rotate(-.5deg)
+}
+.cover .muted{color:#c9c0b2}
+.cover .page-no{background:var(--yellow);color:var(--coal)}
+.muted{color:#625d54}
+.nav-panel{display:flex;justify-content:space-between;gap:10px;margin:24px 0}
+.nav-panel button{flex:1}
+.hidden{display:none!important}
+.small{font-size:14px;color:#625d54}
+.en{font-family:"Courier New",monospace;font-style:italic}
+@media(max-width:760px){
+  html{scroll-padding-top:12px}
+  .toolbar{position:relative;padding:12px}
+  .toolbar strong{width:100%}
+  .toolbar .group{width:100%}
+  .search{flex:1;min-width:0}
+  .book{padding:0;margin:0}
+  .page{padding:29px 19px 68px;min-height:0;margin:0 0 15px;clip-path:none}
+  .page:before{width:6px}
+  .page:after{right:10px;top:12px;width:38px}
+  .running{font-size:11px;margin-bottom:20px}
+  .main-title{font-size:26px}
+  .intro{font-size:16px}
+  .task-label{font-size:18px}
+  .steps li{font-size:15px;padding:10px 10px 10px 51px}
+  .steps li:before{left:8px;top:11px;width:31px;height:31px}
+  .note{font-size:15px;padding:14px 15px}
+  .grid{grid-template-columns:1fr}
+  .part{padding:11px;margin:18px 0}
+  .part-head{font-size:16px;gap:7px;flex-wrap:wrap}
+  .part-head .part-no{font-size:13px}
+  .part-head small{font-size:12px}
+  .index-list{gap:0 9px}
+  .index-item span{font-size:12px;padding:5px 3px}
+  .index-title{font-size:22px}
+  .index-sub{font-size:14px}
+  .page-no{right:19px;bottom:17px}
+  .cover{min-height:88vh;padding:38px 22px}
+  .cover h1{font-size:39px}
+  .cover .subtitle{font-size:17px}
+  .nav-panel{gap:6px}
+  .nav-panel button{font-size:12px;padding:8px 5px}
+}
+@media(max-width:430px){
+  .index-list{grid-template-columns:1fr}
+  .part-head .dots{display:none}
+  .part-head small{margin-left:auto}
+  .toolbar button{padding:8px 9px;font-size:12px}
+}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff;color:#111}
+  .toolbar,.nav-panel{display:none!important}
+  .book{max-width:none;margin:0;padding:0}
+  .page{box-shadow:none;margin:0;width:100%;min-height:0;break-after:page;padding:12mm 13mm 16mm;clip-path:none;border:0}
+  .page:before,.page:after{display:none}
+  .cover{background:var(--coal)!important;color:var(--paper)!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .tag,.note,.part-no,th,.steps li:before,.cover .cover-box{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .steps li,.note,.mini,.practice,.part{break-inside:avoid}
+  .index-link{background:none!important}
+  .page:last-child{break-after:auto}
+}
+
+
+/* India Cyber Cafe — responsive book and A4 print refinement */
+:root{
+  --icc-saffron:#FF9933;
+  --icc-orange:#FF7700;
+  --icc-navy:#000080;
+  --icc-bg:#F8FAFC;
+  --icc-ink:#172033;
+  --icc-line:#D8DEE8;
+}
+body{
+  background:linear-gradient(135deg,#e9edf3 0%,#d9dee8 100%);
+  color:var(--icc-ink);
+  font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,Arial,sans-serif;
+}
+.toolbar{
+  background:#111827;
+  border-bottom:4px solid var(--icc-saffron);
+  box-shadow:0 8px 24px rgba(15,23,42,.18);
+  padding:12px clamp(12px,3vw,32px);
+}
+.toolbar strong{
+  font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif;
+  font-size:clamp(14px,1.5vw,17px);
+  letter-spacing:0;
+}
+.toolbar button,.nav-panel button{
+  background:var(--icc-navy);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:8px;
+  box-shadow:none;
+  padding:9px 15px;
+}
+.toolbar button:hover,.nav-panel button:hover{
+  background:#20209a;
+  transform:translateY(-1px);
+  box-shadow:0 5px 12px rgba(0,0,128,.18);
+}
+.search{
+  border:1px solid #cbd5e1;
+  border-radius:8px;
+  box-shadow:none;
+  background:#fff;
+  min-width:min(230px,35vw);
+}
+.search:focus{border-color:var(--icc-orange);box-shadow:0 0 0 3px rgba(255,153,51,.2)}
+.book{max-width:1100px;margin:28px auto;padding:0 clamp(10px,2vw,22px)}
+.page{
+  background:#fffdf8;
+  border:1px solid #e1d9cb;
+  border-radius:10px;
+  box-shadow:0 12px 35px rgba(31,41,55,.13);
+  clip-path:none;
+  overflow:hidden;
+}
+.page:before{width:7px}
+.page:after{opacity:.45}
+.running{font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif}
+.main-title{
+  font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif;
+  color:#172033;
+  text-shadow:none;
+  border-bottom:3px solid var(--icc-saffron);
+}
+.main-title:after{display:none}
+.tag,.index-title{
+  background:#fff0df;
+  color:#7c3600;
+  border:1px solid #ffd2a3;
+  border-radius:6px;
+  box-shadow:none;
+  transform:none;
+}
+.tag:before,.index-title:before{display:none}
+.task-label{font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif}
+.note,.mini,.practice,.part{
+  border-radius:8px;
+  box-shadow:0 3px 10px rgba(15,23,42,.06);
+}
+.steps li{border-radius:7px;box-shadow:none}
+.steps li:nth-child(even),.steps li:nth-child(odd){transform:none}
+.cover{
+  border-radius:10px;
+  background-color:#111827;
+  background-image:radial-gradient(rgba(255,255,255,.08) .8px,transparent .8px),
+    linear-gradient(135deg,#101827,#242d42);
+}
+.cover h1{font-family:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif}
+.cover .cover-box{border-radius:10px;box-shadow:0 8px 0 rgba(255,153,51,.75);transform:none}
+.brand-credit{
+  margin:28px 0 0;
+  padding-top:10px;
+  border-top:1px solid #d7dce5;
+  color:#647084;
+  font:600 11px/1.5 Arial,sans-serif;
+  letter-spacing:.25px;
+  text-align:center;
+}
+.brand-credit strong{color:#172554}
+@media(max-width:760px){
+  .toolbar{position:sticky;top:0;padding:10px 12px}
+  .toolbar .group{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .toolbar .search{grid-column:1/-1;width:100%;min-width:0}
+  .toolbar button{width:100%;font-size:13px;padding:10px 8px}
+  .book{padding:0 9px;margin:12px auto}
+  .page{border-radius:8px;margin-bottom:14px;padding:25px 17px 58px}
+  .page:before{width:5px}
+  .main-title{font-size:clamp(22px,6vw,28px)}
+  .intro{line-height:1.75}
+  .steps li{line-height:1.65}
+  .table-wrap{max-width:100%}
+  table{min-width:520px}
+}
+@media(max-width:380px){
+  .page{padding-left:14px;padding-right:13px}
+  .cover h1{font-size:32px}
+  .cover .cover-box{padding:16px;font-size:16px}
+  .part-head{align-items:flex-start}
+}
+@media print{
+  @page{size:A4 portrait;margin:9mm}
+  html,body{width:auto!important;background:#fff!important;margin:0!important;padding:0!important}
+  body{font-size:10pt;line-height:1.45;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .toolbar,.nav-panel{display:none!important}
+  .book{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+  .page{
+    display:block;
+    width:100%!important;
+    min-height:279mm!important;
+    height:auto;
+    margin:0!important;
+    padding:8mm 9mm 13mm!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    clip-path:none!important;
+    overflow:visible!important;
+    break-after:page;
+    page-break-after:always;
+  }
+  .page:before,.page:after{display:none!important}
+  .cover{min-height:279mm!important;justify-content:center}
+  .cover h1{font-size:34pt}
+  .cover .subtitle{font-size:15pt}
+  .running{font-size:8pt;margin-bottom:5mm;padding-bottom:2mm}
+  .main-title{font-size:20pt;line-height:1.25;margin:2mm 0 4mm;padding-bottom:3mm}
+  .intro{font-size:10.5pt;line-height:1.55;margin:3mm 0 4mm}
+  .tag{font-size:9pt;padding:2mm 3mm;margin:1mm 0 2mm}
+  .task-label{font-size:11pt;margin:4mm 0 2mm}
+  .note{font-size:9.5pt;line-height:1.5;padding:3mm 4mm;margin:3mm 0}
+  .steps{margin:2mm 0 3mm}
+  .steps li{font-size:9.5pt;line-height:1.45;min-height:0;padding:2mm 3mm 2mm 12mm;margin:1.5mm 0}
+  .steps li:before{width:7mm;height:7mm;left:2mm;top:2mm;font-size:8pt}
+  .grid{gap:3mm;margin:3mm 0}
+  .mini{min-height:0;padding:3mm 4mm}
+  .mini b{font-size:9.5pt;margin-bottom:1mm}
+  .mini span{font-size:8.5pt}
+  .practice{padding:3mm 4mm;margin-top:3mm}
+  .practice h3{font-size:11pt}
+  .practice p,.checklist li{font-size:9pt;line-height:1.4}
+  .page-no{right:8mm;bottom:6mm;width:8mm;height:8mm;font-size:8pt}
+  .brand-credit{font-size:7pt;margin-top:4mm;padding-top:2mm}
+  .index-title{font-size:20pt}
+  .index-sub{font-size:9pt;margin:2mm 0 4mm}
+  .part{padding:3mm;margin:4mm 0 5mm;break-inside:avoid}
+  .part-head{font-size:11pt;padding-bottom:2mm}
+  .part-head .part-no{font-size:8pt;padding:1mm 2mm}
+  .part-head small{font-size:8pt}
+  .index-item span{font-size:8pt;padding:1mm}
+  .cover,.cover .cover-box,.tag,.note,.part-no,th,.steps li:before{
+    print-color-adjust:exact;-webkit-print-color-adjust:exact
+  }
+  .steps li,.note,.mini,.practice,.part{break-inside:avoid}
+  .lesson{break-after:page;page-break-after:always}
+  #lessons .lesson:last-child{break-after:auto;page-break-after:auto}
+  .brand-credit{color:#555}
+}
+
+</style></head>
+<body>
+<div class="toolbar"><strong>कंप्यूटर की ABCD · अभ्यास पुस्तक</strong><div class="group"><input id="search" class="search" placeholder="विषय खोजें…" aria-label="विषय खोजें"><button onclick="showIndex()">विषय सूची</button><button onclick="window.print()">A4 प्रिंट / PDF</button></div></div>
+<main class="book" id="book">
+<section class="page cover" id="cover"><h1>कंप्यूटर की ABCD</h1><div class="cover-rule"></div><div class="subtitle">कंप्यूटर, वर्ड, एक्सेल और टैली सीखने की आसान अभ्यास पुस्तक</div><div class="cover-box"><b>चार भाग · 56 काम · आसान चरण</b><br>देखिए · समझिए · खुद करके सीखिए</div><p class="muted">शुरुआती विद्यार्थियों और रोज़मर्रा के कार्यालयी काम के लिए</p><div class="brand-credit">Prepared &amp; presented by <strong>India Cyber Cafe</strong> · indiacybercafe.com</div><div class="page-no">1</div></section>
+<section class="page index-page" id="index"><div class="running"><span>कंप्यूटर की ABCD</span><span>विषय सूची</span></div><div class="index-title">इस किताब में</div><div class="index-sub">चार भाग, एक सिलसिले में। हर भाग के 14 काम। किसी विषय पर जाने के लिए उसके नाम पर क्लिक कीजिए।</div><div id="indexContent"></div><div class="brand-credit">Prepared &amp; presented by <strong>India Cyber Cafe</strong> · indiacybercafe.com</div><div class="page-no">4</div></section>
+<div id="lessons"></div>
+</main>
+<script>
+const parts=[
+{title:'कंप्यूटर की ABCD',start:5,items:[
+['चालू और बंद','कंप्यूटर को सही तरीके से चालू करना, लॉग-इन करना और Start मेन्यू से बंद करना सीखें।',['बिजली के बोर्ड और कंप्यूटर के प्लग/UPS का कनेक्शन जाँचें।','CPU या लैपटॉप का Power बटन एक बार दबाएँ; बार-बार न दबाएँ।','स्क्रीन पर तारीख/समय और लॉग-इन स्क्रीन आने तक प्रतीक्षा करें।','पासवर्ड या PIN लिखकर Enter दबाएँ।','काम पूरा होने पर Start → Power → Shut down चुनें और स्क्रीन बंद होने दें।'],'कंप्यूटर को चालू और सुरक्षित तरीके से बंद करना।','Power बटन को लगातार दबाकर कंप्यूटर बंद न करें; इससे खुली फाइलें खो सकती हैं।'],
+['माउस और कीबोर्ड','माउस से पॉइंटर चलाना और कीबोर्ड से अक्षर, संख्या तथा कमांड लिखना सीखें।',['माउस को समतल जगह पर रखें और स्क्रीन पर पॉइंटर देखें।','बायाँ क्लिक किसी वस्तु को चुनता है; डबल-क्लिक उसे खोलता है।','दायाँ क्लिक करने पर विकल्पों की सूची खुलती है।','कीबोर्ड में अक्षर, संख्या, Enter, Backspace, Shift और Caps Lock पहचानें।','Notepad खोलकर अपना नाम लिखें; गलती को Backspace से मिटाएँ।'],'क्लिक, डबल-क्लिक, स्क्रॉल और साधारण टाइपिंग।','Caps Lock बड़े अक्षर लगातार लिखता है; Shift दबाकर रखने से एक अक्षर बड़ा लिखा जा सकता है।'],
+['अपना फोल्डर','अपनी फाइलों को व्यवस्थित रखने के लिए नया फोल्डर बनाना और उसका नाम बदलना सीखें।',['Desktop या Documents खोलें।','खाली जगह पर Right click → New → Folder चुनें।','फोल्डर का नाम लिखें, जैसे मेरा काम, और Enter दबाएँ।','फोल्डर खोलें और उसके अंदर एक नया फोल्डर बनाएँ।','फोल्डर पर Right click → Rename चुनकर नाम बदलें।'],'अपने नाम का फोल्डर और उसके अंदर अलग-अलग विषयों के फोल्डर।','एक जैसी फाइलों को एक ही फोल्डर में रखें; नाम छोटा और पहचानने योग्य रखें।'],
+['कॉपी, कट, पेस्ट','फाइल या टेक्स्ट की कॉपी बनाना, उसे दूसरी जगह ले जाना और पेस्ट करना सीखें।',['फाइल या टेक्स्ट चुनें।','कॉपी के लिए Ctrl + C दबाएँ।','जहाँ रखना है वहाँ जाएँ और Ctrl + V दबाएँ।','मूल स्थान से हटाकर ले जाने के लिए Ctrl + X और फिर Ctrl + V दबाएँ।','एक फाइल की कॉपी बनाकर दूसरे फोल्डर में रखें।'],'कॉपी से मूल वस्तु बनी रहती है; कट से वस्तु नई जगह चली जाती है।','पेस्ट करने से पहले सही फोल्डर खोलें।'],
+['पेन ड्राइव','USB पेन ड्राइव लगाना, फाइल कॉपी करना और सुरक्षित रूप से निकालना सीखें।',['पेन ड्राइव को कंप्यूटर के USB पोर्ट में लगाएँ।','File Explorer → This PC में USB ड्राइव पहचानें।','ड्राइव खोलें और आवश्यक फाइल कॉपी करें।','कंप्यूटर के किसी फोल्डर में पेस्ट करें; कॉपी पूरी होने दें।','टास्कबार के Safely Remove/Eject विकल्प से ड्राइव निकालें।'],'पेन ड्राइव से फाइल लेना और उसमें फाइल रखना।','कॉपी पूरी होने से पहले पेन ड्राइव न निकालें। अज्ञात USB में वायरस हो सकता है।'],
+['हिंदी टाइपिंग','कंप्यूटर पर हिंदी लिखने के लिए भाषा और इनपुट कीबोर्ड चुनना सीखें।',['Settings → Time & language → Language & region खोलें।','Hindi भाषा और उपलब्ध हिंदी कीबोर्ड जोड़ें।','Windows + Space से इनपुट भाषा बदलें।','Word या Notepad खोलकर हिंदी में दो वाक्य लिखें।','मात्रा, आधा अक्षर और विराम चिह्न जाँचें।'],'हिंदी में अपना परिचय और एक छोटा संदेश टाइप करना।','टाइपिंग लेआउट के अनुसार अक्षरों की जगह अलग हो सकती है; स्क्रीन पर आउटपुट जाँचते रहें।'],
+['सही वेबसाइट','वेबसाइट का सही पता खोलना, सुरक्षित कनेक्शन पहचानना और उपयोगी जानकारी खोजना सीखें।',['ब्राउज़र खोलें और Address bar पर क्लिक करें।','वेबसाइट का पूरा पता लिखें और Enter दबाएँ।','HTTPS और सही डोमेन नाम जाँचें।','सर्च इंजन में स्पष्ट शब्द लिखकर खोजें।','ज़रूरी पेज को Bookmark करें।'],'किसी आधिकारिक वेबसाइट पर जाकर सही जानकारी ढूँढना।','OTP, पासवर्ड या बैंक विवरण अनजान वेबसाइट पर न डालें; विज्ञापन वाले नकली लिंक से सावधान रहें।'],
+['पहला ईमेल','ईमेल अकाउंट खोलना और नया ईमेल लिखकर भेजना सीखें।',['ब्राउज़र में ईमेल सेवा की आधिकारिक वेबसाइट खोलें।','अपने अकाउंट से साइन इन करें; सार्वजनिक कंप्यूटर पर काम के बाद साइन आउट करें।','Compose/New message पर क्लिक करें।','To में प्राप्तकर्ता का सही ईमेल, Subject में विषय लिखें।','संदेश लिखें, दोबारा जाँचें और Send दबाएँ।'],'एक छोटा औपचारिक ईमेल भेजना।','भेजने से पहले प्राप्तकर्ता का पता और अटैचमेंट जाँचें।'],
+['ईमेल में फाइल','ईमेल के साथ दस्तावेज़, फोटो या PDF जोड़ना और प्राप्त अटैचमेंट डाउनलोड करना सीखें।',['Compose खोलकर प्राप्तकर्ता और विषय लिखें।','Attach files के पेपर-क्लिप चिन्ह पर क्लिक करें।','अपने कंप्यूटर से सही फाइल चुनें।','अपलोड पूरा होने दें और फाइल का नाम जाँचें।','प्राप्त ईमेल में अटैचमेंट खोलें या Download करें।'],'ईमेल के साथ एक PDF भेजना और मिली PDF डाउनलोड करना।','अज्ञात व्यक्ति की ZIP, EXE या संदिग्ध फाइल न खोलें।'],
+['फोटो और सिग्नेचर','फोटो या हस्ताक्षर की साफ डिजिटल कॉपी बनाना और उसे सही जगह सेव करना सीखें।',['फोटो/हस्ताक्षर को सफेद कागज़ पर साफ रोशनी में रखें।','स्कैनर या फोन के कैमरे से सीधा चित्र लें।','किनारों को Crop करें और अनावश्यक हिस्सा हटाएँ।','चित्र को JPG या PNG में सेव करें।','फाइल खोलकर स्पष्टता और दिशा जाँचें।'],'साफ फोटो और हस्ताक्षर फाइल तैयार करना।','आवेदन की वेबसाइट पर बताई गई फाइल साइज और फॉर्मेट सीमा का पालन करें।'],
+['PDF बनाना','Word या फोटो से PDF बनाना और PDF को सही नाम से सेव करना सीखें।',['दस्तावेज़ Word में खोलें या तैयार करें।','File → Save As या Export चुनें।','फाइल टाइप में PDF चुनें।','फाइल का नाम और सेव लोकेशन तय करें।','PDF खोलकर पेज, फॉन्ट और लेआउट जाँचें।'],'एक पेज का PDF दस्तावेज़ बनाना।','PDF बनने के बाद उसे खोलकर जाँचें; केवल एक्सटेंशन बदलने से PDF नहीं बनती।'],
+['प्रिंट निकालना','प्रिंटर चुनना, पेज सेटिंग करना और दस्तावेज़ का प्रिंट निकालना सीखें।',['प्रिंटर चालू करें और पेपर/इंक जाँचें।','दस्तावेज़ खोलकर Ctrl + P दबाएँ।','सही Printer चुनें।','Pages, Copies, Orientation और Paper size जाँचें।','Print Preview देखकर Print दबाएँ।'],'एक पेज का साफ प्रिंट निकालना।','गलत प्रिंटर या अधिक Copies चुनने से बचें; पहले Preview देखें।'],
+['ऑनलाइन फॉर्म','वेबसाइट पर ऑनलाइन फॉर्म भरना, दस्तावेज़ अपलोड करना और आवेदन जमा करना सीखें।',['आधिकारिक वेबसाइट खोलें और निर्देश पढ़ें।','नाम, जन्मतिथि, मोबाइल और पता दस्तावेज़ के अनुसार भरें।','आवश्यक फोटो/PDF निर्धारित फॉर्मेट में अपलोड करें।','Preview में हर जानकारी जाँचें।','Submit के बाद आवेदन संख्या/रसीद सेव करें।'],'एक अभ्यास फॉर्म पूरा करना; वास्तविक आवेदन में सही जानकारी देना।','OTP किसी से साझा न करें। शुल्क और वेबसाइट की प्रामाणिकता जाँचें।'],
+['पासवर्ड और ठगी','मजबूत पासवर्ड बनाना और ऑनलाइन धोखाधड़ी के संकेत पहचानना सीखें।',['हर अकाउंट के लिए अलग और लंबा पासवर्ड रखें।','नाम, जन्मतिथि या 123456 जैसे आसान पासवर्ड न रखें।','जहाँ उपलब्ध हो Two-factor authentication चालू करें।','OTP, UPI PIN और पासवर्ड किसी को न बताएँ।','संदिग्ध लिंक, इनाम और तुरंत भुगतान के संदेशों की जाँच करें।'],'अपने अकाउंट की सुरक्षा जाँच सूची पूरी करना।','बैंक या सरकारी कर्मचारी बनकर कोई OTP/PIN माँगे तो साझा न करें।']
+]},
+{title:'वर्ड की ABCD',start:65,items:[
+['छुट्टी की अर्जी','Word में कार्यालय या कॉलेज के लिए साफ-सुथरी छुट्टी की अर्जी तैयार करना सीखें।',['Word खोलकर Blank document चुनें।','ऊपर दाईं ओर तारीख लिखें।','To, पद और संस्था का नाम लिखें।','Subject में छुट्टी की अवधि लिखें; फिर संबोधन और कारण लिखें।','अंत में धन्यवाद, नाम और पद लिखकर फाइल सेव करें।'],'दो दिन की छुट्टी की औपचारिक अर्जी।','तारीख, छुट्टी की अवधि और वापसी की तारीख स्पष्ट रखें।'],
+['अक्षर सजाना','Word में फॉन्ट, आकार, रंग, Bold, Italic और Underline का उपयोग सीखें।',['टेक्स्ट टाइप करें और माउस से चुनें।','Home टैब में Font सूची से फॉन्ट चुनें।','Font Size से आकार बदलें।','B, I और U से Bold, Italic और Underline करें।','ज़रूरत के अनुसार Font Color और Highlight चुनें।'],'एक शीर्षक और दो पैराग्राफ अलग-अलग शैली में बनाना।','बहुत अधिक रंग और फॉन्ट मिलाने से दस्तावेज़ पढ़ना कठिन होता है।'],
+['बायोडाटा','नौकरी या प्रशिक्षण के लिए सरल और व्यवस्थित बायोडाटा बनाना सीखें।',['नाम, मोबाइल, ईमेल और शहर लिखें।','Career objective की 2–3 पंक्तियाँ जोड़ें।','शिक्षा को नवीनतम से पुराने क्रम में लिखें।','कौशल, अनुभव/प्रोजेक्ट और उपलब्धियाँ जोड़ें।','वर्तनी जाँचकर PDF में सेव करें।'],'एक पेज का विद्यार्थी बायोडाटा।','केवल सही जानकारी दें; अनावश्यक निजी जानकारी न जोड़ें।'],
+['दफ्तर का पत्र','Word में औपचारिक कार्यालयी पत्र का सही प्रारूप बनाना सीखें।',['तारीख और प्राप्तकर्ता का पता लिखें।','विषय को एक पंक्ति में स्पष्ट लिखें।','महोदय/महोदया से पत्र शुरू करें।','मुख्य बात छोटे अनुच्छेदों में लिखें।','भवदीय, नाम, पद और संलग्नक लिखें।'],'कार्यालय में उपकरण की मरम्मत हेतु पत्र।','पत्र में भाषा विनम्र, स्पष्ट और संक्षिप्त रखें।'],
+['सूची','Word में क्रमांकित और बुलेट सूची बनाना सीखें।',['नई लाइन पर सूची का विषय लिखें।','Home टैब में Bullets या Numbering चुनें।','हर बिंदु अलग लाइन में लिखें।','Tab से उप-बिंदु और Shift + Tab से पिछला स्तर चुनें।','Enter दो बार दबाकर सूची समाप्त करें।'],'दैनिक कार्यों की क्रमांकित सूची।','एक सूची में समान प्रकार के बिंदु रखें।'],
+['रेट लिस्ट की तालिका','Word में उत्पादों और कीमतों की तालिका बनाना सीखें।',['Insert → Table से कॉलम और पंक्तियाँ चुनें।','शीर्षक में क्रमांक, वस्तु और कीमत लिखें।','हर वस्तु की जानकारी अलग पंक्ति में भरें।','Table Design से बॉर्डर और हल्का शेडिंग चुनें।','कुल और कीमतों की जाँच करके सेव करें।'],'कम-से-कम पाँच वस्तुओं की रेट लिस्ट।','कीमत के साथ ₹ और इकाई स्पष्ट लिखें।'],
+['फोटो और लोगो','Word दस्तावेज़ में फोटो या लोगो जोड़ना और उसका आकार ठीक करना सीखें।',['Insert → Pictures चुनें।','फाइल से फोटो चुनकर Insert करें।','चित्र चुनें और कोने से आकार बदलें।','Wrap Text से Square या In Front of Text जैसे विकल्प समझें।','चित्र को पेज में सही जगह रखकर सेव करें।'],'शीर्षक के साथ एक लोगो/फोटो वाला पेज।','चित्र को किनारे से खींचें ताकि उसका अनुपात न बिगड़े।'],
+['पेज सेट करना','पेज का आकार, मार्जिन, दिशा और पेज बॉर्डर बदलना सीखें।',['Layout → Size से A4 चुनें।','Margins से Normal या Custom margins चुनें।','Orientation से Portrait या Landscape चुनें।','Layout/Page Borders विकल्प उपलब्ध हो तो बॉर्डर लगाएँ।','Print Preview में पेज की स्थिति जाँचें।'],'A4 आकार का एक पेज तैयार करना।','प्रिंट से पहले पेज कटने और खाली जगह की जाँच करें।'],
+['हिंदी में टाइप','Word में हिंदी भाषा चुनकर हिंदी अनुच्छेद लिखना और सुधारना सीखें।',['Windows में Hindi keyboard/input जोड़ें।','Word खोलकर Windows + Space से हिंदी चुनें।','शीर्षक और छोटा अनुच्छेद टाइप करें।','मात्रा और संयुक्त अक्षर ध्यान से जाँचें।','दस्तावेज़ सेव करके दोबारा खोलें।'],'हिंदी में पाँच वाक्य लिखना।','यदि अक्षर गलत दिखें तो इनपुट भाषा और फॉन्ट जाँचें।'],
+['खोजना और बदलना','Find और Replace से दस्तावेज़ में शब्द खोजना और बदलना सीखें।',['Ctrl + F दबाकर खोज बॉक्स खोलें।','खोजने वाला शब्द लिखें।','Ctrl + H से Replace खोलें।','Find what और Replace with में सही शब्द लिखें।','एक-एक बदलाव जाँचें या Replace All सावधानी से करें।'],'दस्तावेज़ में किसी नाम की सभी गलत वर्तनियाँ ठीक करना।','Replace All से पहले दस्तावेज़ की कॉपी सेव करना अच्छा है।'],
+['मेल मर्ज','एक ही पत्र कई लोगों के नाम से तैयार करने के लिए Mail Merge सीखें।',['Mailings → Start Mail Merge → Letters चुनें।','Select Recipients से Excel सूची चुनें या नई सूची बनाएँ।','पत्र का सामान्य टेक्स्ट लिखें।','Insert Merge Field से नाम और पता जोड़ें।','Preview Results देखकर Finish & Merge करें।'],'तीन प्राप्तकर्ताओं के नाम से आमंत्रण पत्र।','डेटा सूची में कॉलम शीर्षक साफ और हर रिकॉर्ड पूरा रखें।'],
+['एक पेज में प्रिंट','लंबे दस्तावेज़ को पेज में फिट करने के विकल्प समझें।',['Ctrl + P से Print Preview खोलें।','पेजों की संख्या और खाली पेज जाँचें।','Font या Margins थोड़ा समायोजित करें।','Printer Properties में उपलब्ध Fit/Shrink विकल्प देखें।','Preview सही हो तभी प्रिंट निकालें।'],'एक पेज का दस्तावेज़ बिना कटे प्रिंट करना।','अक्षर बहुत छोटे करके सामग्री पढ़ने योग्य न रहने दें।'],
+['PDF में सेव','Word फाइल को PDF में बदलकर साझा करने योग्य कॉपी बनाना सीखें।',['File → Save As या Export खोलें।','फाइल टाइप PDF चुनें।','विकल्पों में सही पेज रेंज चुनें।','Save/Publish दबाएँ।','PDF खोलकर फॉन्ट, टेबल और पेज जाँचें।'],'बायोडाटा की PDF कॉपी।','मूल DOCX फाइल भी सुरक्षित रखें ताकि बाद में बदलाव कर सकें।'],
+['पाँच स्लाइड','PowerPoint में पाँच स्लाइड की छोटी प्रस्तुति बनाना सीखें।',['PowerPoint खोलकर Blank Presentation चुनें।','पहली स्लाइड पर शीर्षक और अपना नाम लिखें।','New Slide से चार स्लाइड जोड़ें।','हर स्लाइड पर एक मुख्य विचार और छोटा विवरण रखें।','Slide Show चलाकर क्रम और वर्तनी जाँचें।'],'“मेरा परिचय” विषय पर पाँच स्लाइड।','एक स्लाइड पर बहुत अधिक टेक्स्ट न भरें।']
+]},
+{title:'एक्सेल की ABCD',start:125,items:[
+['सैलरी शीट','चार कर्मचारियों की बेसिक सैलरी, HRA, PF और हाथ में वेतन निकालना सीखें।',['A1:E1 में नाम, बेसिक, HRA, PF और हाथ में लिखें।','चार कर्मचारियों के नाम और बेसिक वेतन भरें।','HRA कॉलम में बेसिक का 40% निकालें: =B2*40%。','PF कॉलम में बेसिक का 12% निकालें: =B2*12%。','हाथ में वेतन निकालें: =B2+C2-D2; फिर SUM से कुल जोड़ें।'],'HRA = बेसिक का 40%, PF = बेसिक का 12%, हाथ में = बेसिक + HRA − PF।','प्रतिशत बदलने पर सभी सूत्र उसी अनुसार बदलें; उदाहरण के लिए =B2*40%।'],
+['अटेंडेंस रजिस्टर','कर्मचारियों या विद्यार्थियों की दैनिक उपस्थिति दर्ज करना सीखें।',['पहली पंक्ति में नाम और तारीखें लिखें।','हर दिन के सामने P (Present), A (Absent) या L (Leave) भरें।','महीने के अंत में P की गिनती के लिए COUNTIF लगाएँ।','उपस्थिति प्रतिशत = उपस्थित दिन / कुल कार्य दिवस × 100।','शीर्षक और नामों को साफ फॉर्मेट करें।'],'एक महीने का उपस्थिति रजिस्टर और कुल उपस्थित दिन।','P, A और L के लिए एक ही spelling लगातार रखें।'],
+['महीने का खर्च','घर या ऑफिस का मासिक खर्च सूचीबद्ध करके कुल और श्रेणीवार खर्च निकालना सीखें।',['कॉलम बनाएँ: तारीख, विवरण, श्रेणी और राशि।','हर खर्च की एक पंक्ति दर्ज करें।','कुल खर्च के लिए =SUM(D2:D50) लिखें।','श्रेणी के अनुसार खर्च जोड़ने के लिए SUMIF का उपयोग करें।','राशि को मुद्रा फॉर्मेट में दिखाएँ।'],'महीने का कुल खर्च और भोजन/यात्रा जैसी श्रेणियों का योग।','हर खर्च एक बार दर्ज करें और तारीख सही रखें।'],
+['बिल','Excel में ग्राहक का बिल और कुल राशि तैयार करना सीखें।',['कॉलम बनाएँ: वस्तु, मात्रा, दर और राशि।','पहली वस्तु की राशि के लिए =B2*C2 लिखें।','सूत्र नीचे की पंक्तियों तक कॉपी करें।','कुल राशि के लिए =SUM(D2:D20) लिखें।','जरूरत हो तो छूट और टैक्स अलग कॉलम में जोड़ें।'],'कम-से-कम पाँच वस्तुओं का बिल।','मात्रा और दर की इकाई स्पष्ट रखें; टैक्स दर सही स्रोत से लें।'],
+['मार्कशीट','विद्यार्थियों के विषयवार अंक, कुल, प्रतिशत और परिणाम बनाना सीखें।',['कॉलम में नाम और विषयों के अंक लिखें।','कुल के लिए =SUM(B2:F2) लगाएँ।','प्रतिशत के लिए =G2/कुल_अधिकतम_अंक*100 करें।','IF से निर्धारित नियम के अनुसार Pass/Fail दिखाएँ।','हेडिंग, बॉर्डर और नंबर फॉर्मेट लगाएँ।'],'तीन विद्यार्थियों की मार्कशीट।','पास होने के नियम और अधिकतम अंक पहले स्पष्ट करें।'],
+['स्टॉक की लिस्ट','दुकान के सामान का शुरुआती स्टॉक, आया माल, बिका माल और बचा स्टॉक दर्ज करना सीखें।',['कॉलम बनाएँ: आइटम, शुरुआती स्टॉक, आया, बिक्री, बाकी।','हर वस्तु का शुरुआती स्टॉक लिखें।','बाकी स्टॉक का सूत्र =B2+C2-D2 लगाएँ।','सूत्र नीचे कॉपी करें।','कम स्टॉक वाली वस्तुओं को रंग से पहचानें।'],'कम-से-कम पाँच वस्तुओं की स्टॉक सूची।','बिक्री शुरुआती स्टॉक और आए माल से अधिक हो तो रिकॉर्ड जाँचें।'],
+['छाँटना और फिल्टर','डेटा को नाम/राशि के अनुसार क्रम में लगाना और Filter से चुनना सीखें।',['तालिका में शीर्षक सहित पूरा डेटा चुनें।','Data → Sort से A to Z या Largest to Smallest चुनें।','Data → Filter चालू करें।','किसी कॉलम के तीर से आवश्यक मान चुनें।','Clear Filter से पूरा डेटा वापस दिखाएँ।'],'सबसे अधिक वेतन वाले कर्मचारी ऊपर दिखाना।','Sort करते समय पूरी तालिका चुनें ताकि पंक्तियों का डेटा अलग न हो।'],
+['IF की शर्त','IF सूत्र से शर्त के आधार पर परिणाम दिखाना सीखें।',['एक कॉलम में अंक लिखें।','पास होने की सीमा तय करें, जैसे 33।','परिणाम सेल में =IF(B2>=33,"Pass","Fail") लिखें।','Enter दबाएँ और सूत्र नीचे कॉपी करें।','कुछ अंक बदलकर परिणाम जाँचें।'],'अंकों के आधार पर Pass/Fail दिखाना।','टेक्स्ट परिणाम दोहरे उद्धरण चिह्नों में लिखें।'],
+['VLOOKUP','तालिका में किसी कोड या नाम के आधार पर संबंधित जानकारी खोजना सीखें।',['एक छोटी मास्टर तालिका बनाएँ: कोड, नाम, कीमत।','दूसरी जगह खोजने वाला कोड लिखें।','सूत्र लिखें: =VLOOKUP(E2,A2:C10,2,FALSE)।','FALSE से exact match खोजें।','दूसरे कॉलम के लिए col_index_num बदलें।'],'कोड लिखकर वस्तु का नाम और कीमत निकालना।','खोज वाला कॉलम चुनी गई तालिका का पहला कॉलम होना चाहिए।'],
+['COUNTIF और SUMIF','किसी शर्त से मेल खाने वाली प्रविष्टियाँ गिनना और उनका योग करना सीखें।',['डेटा में विभाग या श्रेणी का कॉलम रखें।','किसी विभाग की गिनती के लिए =COUNTIF(B2:B20,"Sales") लिखें।','उसी विभाग की राशि जोड़ने के लिए =SUMIF(B2:B20,"Sales",C2:C20) लिखें।','श्रेणी का नाम बदलकर परिणाम देखें।','रेंज और योग रेंज बराबर पंक्तियों की रखें।'],'विभागवार कर्मचारी संख्या और बिक्री का योग।','शर्त में लिखे नाम का spelling डेटा से मिलना चाहिए।'],
+['तारीखों का हिसाब','तारीख दर्ज करना, दिनों का अंतर निकालना और तारीख का फॉर्मेट बदलना सीखें।',['सेल में तारीख लिखें, जैसे 01-11-2026।','Format Cells → Date से प्रदर्शन शैली चुनें।','दो तारीखों के बीच दिन निकालने के लिए =B2-A2 लिखें।','आज की तारीख के लिए =TODAY() उपयोग करें।','परिणाम को Number या Date फॉर्मेट में जाँचें।'],'काम शुरू और समाप्त होने के बीच कुल दिन निकालना।','तारीख वास्तविक Excel date होनी चाहिए, केवल टेक्स्ट नहीं।'],
+['पिवट टेबल','बड़े डेटा का विभागवार या माहवार सारांश PivotTable से बनाना सीखें।',['शीर्षक सहित पूरी डेटा तालिका चुनें।','Insert → PivotTable चुनें।','New Worksheet चुनकर OK करें।','Fields में विभाग को Rows और राशि को Values में रखें।','ज़रूरत के अनुसार Sum/Count और Filter बदलें।'],'विभागवार कुल बिक्री का सारांश।','डेटा में खाली शीर्षक न रखें; स्रोत डेटा बदलने पर Refresh करें।'],
+['ग्राफ','डेटा को Column, Bar या Pie Chart में दिखाना सीखें।',['श्रेणी और मान वाले सेल चुनें।','Insert → Charts खोलें।','डेटा के अनुसार Column, Bar या Pie चुनें।','Chart Title और Axis Titles स्पष्ट लिखें।','चार्ट का आकार और स्थान ठीक करें।'],'महीनेवार बिक्री का कॉलम चार्ट।','तुलना के लिए सही चार्ट चुनें; बहुत अधिक श्रेणियाँ Pie Chart में न रखें।'],
+['एक पेज में प्रिंट','Excel शीट को प्रिंट करते समय एक पेज में फिट करना और प्रिंट एरिया चुनना सीखें।',['Page Layout → Print Area → Set Print Area चुनें।','Orientation और Paper Size A4 जाँचें।','Scale to Fit में Width = 1 page चुनें।','File → Print में Preview देखें।','पढ़ने योग्य आकार हो तभी प्रिंट करें।'],'तालिका को एक पेज में व्यवस्थित प्रिंट करना।','बहुत चौड़ी शीट को एक पेज में दबाने से अक्षर छोटे हो सकते हैं।']
+]},
+{title:'टैली की ABCD',start:185,items:[
+['कंपनी बनाना','Tally में नई कंपनी बनाकर नाम, पता और वित्तीय वर्ष की शुरुआत दर्ज करना सीखें।',['Tally खोलें और Create Company चुनें।','Company Name और Mailing Name भरें।','Address, State, Country और Contact जानकारी दर्ज करें।','Financial year beginning और Books beginning की तारीख चुनें।','Ctrl + A से विवरण स्वीकार करें और कंपनी खोलें।'],'एक अभ्यास कंपनी “Raj Traders” बनाना।','वित्तीय वर्ष की तारीख अपने व्यवसाय और लागू नियमों के अनुसार रखें।'],
+['टैली का नक्शा','Tally के मुख्य स्क्रीन, मेन्यू, वाउचर और रिपोर्ट की जगह पहचानना सीखें।',['Gateway of Tally स्क्रीन देखें।','Company और Current Period की जानकारी पहचानें।','Masters में Groups और Ledgers का स्थान देखें।','Vouchers में Accounting और Inventory विकल्प पहचानें।','Reports में Balance Sheet और Profit & Loss खोलें।'],'मुख्य मेन्यू तक बिना सहायता पहुँचना।','मेन्यू का नाम संस्करण के अनुसार थोड़ा बदल सकता है।'],
+['लेजर बनाना','लेन-देन दर्ज करने के लिए Cash, Bank, Sales और Purchase जैसे Ledger बनाना सीखें।',['Gateway → Create → Ledger खोलें।','Ledger Name लिखें।','Under में सही Group चुनें, जैसे Cash-in-Hand या Bank Accounts।','Opening Balance हो तो सही राशि और Dr/Cr चुनें।','Ctrl + A से सेव करें और आवश्यक Ledger बनाएँ।'],'Cash, Bank, Sales और Purchase Ledger।','Ledger को गलत Group में रखने से रिपोर्ट गलत हो सकती है।'],
+['बिक्री का बिल','Tally में ग्राहक को सामान बेचने का Sales Voucher बनाना सीखें।',['Gateway → Vouchers में जाएँ और Sales चुनें।','Party A/c Name में ग्राहक Ledger चुनें।','Sales Ledger और Item/Amount दर्ज करें।','मात्रा, दर और लागू टैक्स विवरण जाँचें।','Voucher स्वीकार करके सेव करें और बिल प्रिंट Preview देखें।'],'एक साधारण बिक्री वाउचर।','GST लागू हो तो सही GSTIN, स्थान और टैक्स दर की पुष्टि करें।'],
+['खरीद की एंट्री','सप्लायर से खरीदे गए सामान की Purchase Voucher एंट्री करना सीखें।',['Vouchers में Purchase चुनें।','Supplier/Party Ledger चुनें।','Purchase Ledger या Stock Item चुनें।','मात्रा, दर, टैक्स और बिल नंबर भरें।','कुल मिलाकर मूल सप्लायर बिल से मिलाएँ और सेव करें।'],'एक खरीद वाउचर दर्ज करना।','खरीद की तारीख और सप्लायर इनवॉइस नंबर सही लिखें।'],
+['भुगतान और रसीद','नकद या बैंक से भुगतान और प्राप्त राशि के Voucher दर्ज करना सीखें।',['Payment Voucher खोलें; भुगतान किसे हुआ चुनें।','Cash/Bank Ledger चुनें और राशि भरें।','Receipt Voucher में प्राप्तकर्ता/ग्राहक और Cash/Bank चुनें।','Narration में भुगतान का कारण लिखें।','Voucher सेव करके Day Book में जाँचें।'],'एक भुगतान और एक प्राप्ति एंट्री।','भुगतान और प्राप्ति के Voucher उलटे न चुनें।'],
+['जमा और निकासी','Cash और Bank के बीच Contra Voucher से राशि स्थानांतरित करना सीखें।',['Contra Voucher खोलें।','Cash से Bank जमा हो तो Bank Debit और Cash Credit दर्ज करें।','निकासी में Bank Debit/Cash Credit की दिशा उलटने के बजाय वास्तविक प्रविष्टि ध्यान से चुनें।','राशि और तारीख बैंक पर्ची से मिलाएँ।','Voucher सेव करें और Cash/Bank balance जाँचें।'],'कैश से बैंक में जमा की अभ्यास एंट्री।','डेबिट/क्रेडिट दिशा को वाउचर स्क्रीन पर जाँचें; वास्तविक रिकॉर्ड से मिलान करें।'],
+['स्टॉक के आइटम','Inventory के लिए Stock Group, Unit और Stock Item बनाना सीखें।',['Create → Stock Group में समूह बनाएँ।','Units में Nos, Kg या Pcs जैसी इकाई बनाएँ।','Stock Item में वस्तु का नाम और Group चुनें।','Opening Quantity और Rate सही भरें।','स्टॉक सारांश में वस्तु की मात्रा जाँचें।'],'पाँच वस्तुओं की स्टॉक सूची।','हर वस्तु के लिए एक समान इकाई रखें और मात्रा सही दर्ज करें।'],
+['GST वाला बिल','Tally में GST सहित बिक्री बिल दर्ज करने की मूल प्रक्रिया समझें।',['Company Features में GST सुविधा की स्थिति जाँचें।','Company का State और GSTIN सही दर्ज करें, यदि लागू हो।','Party Ledger में ग्राहक का State और GSTIN भरें।','Sales Voucher में वस्तु, HSN/SAC और सही GST rate चुनें।','CGST/SGST या IGST विभाजन बिल से मिलाकर सेव करें।'],'अभ्यास के लिए GST बिक्री वाउचर।','GST दर और लागू नियम वस्तु/सेवा व स्थान पर निर्भर हैं; आधिकारिक नियम से सत्यापित करें।'],
+['आधार का हिसाब','ग्राहक या सप्लायर के खाते का बकाया और Ledger Balance देखना सीखें।',['Ledger Vouchers या Display Ledger खोलें।','खाते का नाम और अवधि चुनें।','Opening Balance, Debit और Credit प्रविष्टियाँ देखें।','Closing Balance की Dr/Cr स्थिति पढ़ें।','संबंधित बिल और रसीद से मिलान करें।'],'एक पार्टी का बकाया पता करना।','यहाँ “आधार” का अर्थ खाते का आधार/बकाया समझें; पहचान-पत्र संख्या दर्ज न करें।'],
+['गलती सुधारना','गलत Voucher को खोजकर सुरक्षित तरीके से Alter या Cancel करना सीखें।',['Day Book खोलकर तारीख/वाउचर नंबर से एंट्री खोजें।','Voucher खोलकर गलती पहचानें।','Alter में सही Ledger, तारीख या राशि बदलें।','सहेजने से पहले मूल बिल/रसीद से मिलान करें।','ज़रूरत पर ही Delete/Cancel करें और बदलाव का रिकॉर्ड रखें।'],'एक अभ्यास Voucher में गलत राशि सुधारना।','वास्तविक खातों में बिना अनुमति एंट्री न हटाएँ; ऑडिट ट्रेल सुरक्षित रखें।'],
+['रिपोर्ट','Tally की Day Book, Trial Balance, Balance Sheet और Profit & Loss रिपोर्ट देखना सीखें।',['Gateway → Display/Reports खोलें।','Day Book में दिन की सभी एंट्री देखें।','Trial Balance में Ledger balances जाँचें।','Profit & Loss में आय और खर्च देखें।','Balance Sheet में Assets और Liabilities देखें।'],'एक अवधि की मुख्य रिपोर्ट खोलना।','रिपोर्ट सही होने के लिए सभी Voucher और Ledger सही दर्ज होने चाहिए।'],
+['बिल का प्रिंट','Tally से Invoice का Preview, प्रिंट और PDF आउटपुट लेना सीखें।',['Sales Voucher खोलें।','Print या Preview विकल्प चुनें।','Company, ग्राहक, तारीख और बिल नंबर जाँचें।','Paper size और प्रिंटर सेटिंग चुनें।','Print करें या उपलब्ध Export विकल्प से PDF सेव करें।'],'एक बिक्री बिल का प्रिंट/ PDF।','ग्राहक को देने से पहले राशि, टैक्स और विवरण जाँचें।'],
+['बैकअप','Tally कंपनी के डेटा का बैकअप बनाना और जरूरत पर Restore करना सीखें।',['Company Data का वर्तमान स्थान पहचानें।','Data/Backup विकल्प खोलें।','अलग सुरक्षित ड्राइव या फ़ोल्डर चुनें।','Backup पूरा होने का संदेश जाँचें।','Restore केवल सही कंपनी और सही बैकअप लोकेशन से करें।'],'अभ्यास कंपनी का बैकअप बनाना।','बैकअप को उसी कंप्यूटर तक सीमित न रखें; सुरक्षित दूसरी जगह कॉपी रखें।']
+]}
+];
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function pageNum(partIndex,itemIndex){return parts[partIndex].start+itemIndex*4;}
+function renderIndex(){let html='';parts.forEach((p,pi)=>{let left=p.items.slice(0,7),right=p.items.slice(7);html+=`<section class="part"><div class="part-head"><span class="part-no">भाग ${pi+1}</span><span>${p.title}</span><span class="dots"></span><small>पेज ${p.start}</small></div><div class="index-list"><div class="index-col">${left.map((it,i)=>`<div class="index-item index-link" onclick="goLesson(${pi},${i})"><span>${i+1}. ${esc(it[0])}</span><span class="pg">${pageNum(pi,i)+2}</span></div>`).join('')}</div><div class="index-col">${right.map((it,i)=>`<div class="index-item index-link" onclick="goLesson(${pi},${i+7})"><span>${i+8}. ${esc(it[0])}</span><span class="pg">${pageNum(pi,i+7)+2}</span></div>`).join('')}</div></div></section>`});document.getElementById('indexContent').innerHTML=html;}
+function lessonHtml(pi,ii,item){let pg=pageNum(pi,ii),part=parts[pi];return `<section class="page lesson" id="lesson-${pi}-${ii}" data-search="${esc((part.title+' '+item[0]+' '+item[1]).toLowerCase())}"><div class="running"><span>${part.title}</span><span>काम ${ii+1} · ${esc(item[0])}</span></div><div class="tag">★ शुरुआती अभ्यास · भाग ${pi+1}</div><h1 class="main-title">काम ${ii+1} : ${esc(item[0])}</h1><p class="intro">${esc(item[1])} इस काम में दिए गए चरणों को क्रम से कीजिए और अंत में अपना अभ्यास जाँचिए।</p><div class="task-label">1 · यह बनाना है</div><div class="note"><b>आज का लक्ष्य:</b> ${esc(item[3])}<br><b>ज़रूरी बात:</b> ${esc(item[4])}</div><div class="task-label">2 · कहाँ से शुरू करें</div><ol class="steps">${item[2].map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="task-label">3 · याद रखने की बात</div><div class="note">${esc(item[4])}</div><div class="grid"><div class="mini"><b>इस काम से क्या सीखेंगे?</b><span>${esc(item[3])}</span></div><div class="mini"><b>काम पूरा होने पर</b><span>अपनी फाइल सेव करें और उसे दोबारा खोलकर जाँचें।</span></div></div><div class="practice"><h3>4 · खुद करके देखिए</h3><p>अब यही काम बिना चरण देखे एक बार दोहराइए। अपने बनाए काम में नाम, तारीख, वर्तनी और सेव की गई फाइल जाँचिए।</p><ul class="checklist"><li>मैंने सभी चरण पूरे किए।</li><li>मैंने परिणाम को जाँचा।</li><li>मैंने फाइल सही नाम से सेव की।</li></ul></div><div class="brand-credit">Prepared &amp; presented by <strong>India Cyber Cafe</strong> · indiacybercafe.com</div><div class="nav-panel"><button onclick="prevLesson(${pi},${ii})">← पिछला काम</button><button onclick="showIndex()">विषय सूची</button><button onclick="nextLesson(${pi},${ii})">अगला काम →</button></div><div class="page-no">${pg+2}</div></section>`}
+function renderLessons(){let h='';parts.forEach((p,pi)=>p.items.forEach((it,ii)=>h+=lessonHtml(pi,ii,it)));document.getElementById('lessons').innerHTML=h;}
+function showIndex(){document.getElementById('index').scrollIntoView({behavior:'smooth'});}
+function goLesson(p,i){document.getElementById(`lesson-${p}-${i}`).scrollIntoView({behavior:'smooth'});}
+function nextLesson(p,i){if(i<13)goLesson(p,i+1);else if(p<3)goLesson(p+1,0);else showIndex();}
+function prevLesson(p,i){if(i>0)goLesson(p,i-1);else if(p>0)goLesson(p-1,13);else showIndex();}
+renderIndex();renderLessons();
+document.getElementById('search').addEventListener('input',e=>{let q=e.target.value.trim().toLowerCase();document.querySelectorAll('.lesson').forEach(el=>{el.classList.toggle('hidden',!!q&&!el.dataset.search.includes(q));});if(q){document.getElementById('lessons').scrollIntoView({behavior:'smooth'});}});
+</script></body></html>
